@@ -3,9 +3,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background: linear-gradient(90deg, #2e1c20, #67394c,#2e1c20);
+  background: linear-gradient(90deg, #2e1c20, #67394c, #2e1c20);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 3.5rem;
+  max-width: 100vw;
 }
 .logo {
   color: #e50914;
@@ -30,7 +31,6 @@
   font-size: 16px;
   color: white;
   pointer-events: none;
-  
 }
 
 .dropdown {
@@ -74,14 +74,36 @@
   text-decoration: none;
 }
 .navlink {
-  text-decoration: none; 
+  text-decoration: none;
 }
 
-
-.sign_in:hover{
-    background-color: #bab7b8;
+.sign_in:hover {
+  background-color: #bab7b8;
 }
 
 @media screen and (max-width: 700px) {
-  
+  .logo::before {
+    content: "M"; /* Show only "M" */
+  }
+  .logo {
+    font-size: 1.5rem;
+    color: #e50914;
+    visibility: hidden;
+    position: relative;
+  }
+  .logo::before {
+    visibility: visible; /* Show "M" */
+    position: static; /* Keep it inline */
+    font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  .sign_in {
+    width: 4rem; /* Reduce button width */
+    padding: 6px;
+    font-size: 0.9rem; /* Smaller font size */
+  }
+  .dropdown {
+    width: 4rem;
+    /* padding: 6px px 8px 20px; */
+    height: 2rem;
+  }
 }
