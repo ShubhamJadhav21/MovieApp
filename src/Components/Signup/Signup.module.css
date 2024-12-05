@@ -1,0 +1,147 @@
+/* Parent Wrapper */
+.signup_mainwrapper {
+  background: url("/src/assets/MovieBackgroundImages/signupMovieBackground.jpeg");
+  background-size: cover;
+  background-position: center center;
+  position: fixed;
+  width: 100%; /* Ensure it spans the full width of its container */
+  height: 100vh; /* Full height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back {
+  position: absolute;
+  left: 1rem;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.signup_wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(#13191c, #010102);
+  width: 22%;
+  padding: 2rem;
+  min-height: 65vh;
+  /* Ensures form is centered */
+}
+
+/* Signup Container */
+.signup_container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 80%;
+}
+
+/* Signup Form */
+.signup_form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  /* Ensure that form spans full width of parent */
+}
+
+h1 {
+  text-align: center;
+}
+
+/* Form Group */
+.label {
+  color: #bcbec3;
+  font-size: 1rem;
+  margin-bottom: 0.1rem;
+}
+
+/* Input Fields */
+.signup_firstName,
+.signup_lastName,
+.signup_mob,
+.signup_password {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  height: 3rem;
+  padding-left: 0.5rem;
+  margin-bottom: 0.5rem; /* Adds space for error messages */
+}
+
+.form_group {
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Positioning for the error messages */
+}
+
+/* Button */
+.signup_btn {
+  height: 2.5rem;
+  background-color: #e50914;
+  border-radius: 0.2rem;
+  border: none;
+  color: white;
+}
+
+.signup_btn:hover {
+  background-color: #c11119;
+  cursor: pointer;
+}
+
+.already_ac {
+  color: #bab7b4;
+  display: flex;
+  gap: 0.2rem;
+}
+
+.error {
+  position: absolute; /* Positioning of the error message */
+  color: red;
+  font-size: 0.9rem;
+  bottom: -9px; /* Place below the input */
+  left: 0;
+  margin-top: 5px;
+}
+
+.already_ac span {
+  color: #507fff;
+  font-size: 1.025;
+}
+
+.navlink {
+  text-decoration: none;
+}
+
+/* Mobile Adjustments */
+@media screen and (max-width: 700px) {
+  .signup_wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(#13191c, #010102);
+    width: 100%;
+    padding: 2rem;
+    height: 100vh;
+  }
+
+  /* Signup Container */
+  .signup_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 80%;
+  }
+
+  /* Signup Form */
+  .signup_form {
+    margin-top: 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+}

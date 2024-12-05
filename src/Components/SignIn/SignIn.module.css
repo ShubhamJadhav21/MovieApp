@@ -1,0 +1,144 @@
+.signin_maincontainer {
+  background: url("/src/assets/MovieBackgroundImages/movieBackground.jpeg");
+  background-size: cover;
+  background-position: center center;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100%; /* Ensure it spans the full width of its container */
+  height: 100vh; /* Full height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.error {
+  color: red;
+  font-size: 0.9rem;
+}
+.back {
+  position: absolute;
+  left: 1rem;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.main_wrapper_signin {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(#13191c, #010102);
+  width: 22%;
+  padding: 2rem;
+  min-height: 65vh;
+}
+h1 {
+  color: white;
+}
+.label {
+  color: #bcbec3;
+}
+.wrapper_sign_in {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 80%;
+}
+.mob_input,
+.pass_input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  height: 3rem;
+  padding-left: 0.5rem;
+}
+.signin_btn {
+  height: 2.5rem;
+  margin-top: 1rem;
+  background-color: #e50914;
+  border-radius: 0.2rem;
+  border: none;
+  color: white;
+}
+.or {
+  color: white;
+  text-align: center;
+}
+.otp {
+  height: 2.5rem;
+  /* color: white; */
+  cursor: pointer;
+}
+.otp:hover {
+  background-color: #c11119;
+  cursor: pointer;
+  border: none;
+  color: white;
+}
+.signin_btn:hover {
+  background-color: #c11119;
+  cursor: pointer;
+}
+.signup {
+  display: flex;
+  gap: 0.5rem;
+}
+.signup p {
+  color: #bab7b4;
+}
+.signup span {
+  color: #507fff;
+  font-size: 1.025rem;
+}
+.mob,
+.pass {
+  display: flex;
+  flex-direction: column;
+}
+.navlink {
+  text-decoration: none;
+}
+.otp_btn {
+  height: 2.5rem;
+  /* color: white; */
+  cursor: pointer;
+}
+.otp_btn:hover {
+  background-color: #c11119;
+  cursor: pointer;
+  border: none;
+  color: white;
+}
+.disabled {
+  background-color: #d3d3d3; /* Grey out the button */
+  color: #a1a1a1; /* Change text color to light grey */
+  cursor: not-allowed; /* Prevent cursor change on hover */
+  pointer-events: none; /* Disable all interactions, including hover */
+}
+button:disabled {
+  background-color: #d3d3d3;
+  color: #a1a1a1;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+@media screen and (max-width: 700px) {
+  .main_wrapper_signin {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(#13191c, #010102);
+    width: 100%;
+    padding: 2rem;
+    height: 95%;
+  }
+  h1 {
+    color: white;
+    font-size: 1.8rem;
+  }
+  .wrapper_sign_in {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+}
