@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import style from "./Signup.module.css";
 import { IoHomeOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Signup() {
   const navigate = useNavigate(); // Hook to navigate after successful signup
-
+  const {t,i18} = useTranslation()
   // State for storing form values and error messages
   const [formData, setFormData] = useState({
     firstName: "",
@@ -91,16 +92,16 @@ export default function Signup() {
           <span className={style.back} onClick={goHome}>
             <IoHomeOutline />
           </span>
-          <h1>Sign Up</h1>
+          <h1>{t('SignUp')}</h1>
           {errors.form && <div className={style.error}>{errors.form}</div>}
 
           <div className={style.form_group}>
             <label htmlFor="firstName" className={style.label}>
-              First Name
+              {t('FirstName')}
             </label>
             <input
               type="text"
-              placeholder="First Name"
+              placeholder={t('FirstName')}
               name="firstName"
               id="firstName"
               className={style.signup_firstName}
@@ -114,11 +115,11 @@ export default function Signup() {
 
           <div className={style.form_group}>
             <label htmlFor="lastName" className={style.label}>
-              Last Name
+              {t('LastName')}
             </label>
             <input
               type="text"
-              placeholder="Last Name"
+              placeholder={t('LastName')}
               name="lastName"
               id="lastName"
               className={style.signup_lastName}
@@ -132,11 +133,11 @@ export default function Signup() {
 
           <div className={style.form_group}>
             <label htmlFor="mobNo" className={style.label}>
-              Mobile Number
+              {t('MobileNo')}
             </label>
             <input
               type="text"
-              placeholder="Mobile Number"
+              placeholder={t('MobileNo')}
               name="mobNo"
               id="mobNo"
               className={style.signup_mob}
@@ -150,11 +151,11 @@ export default function Signup() {
 
           <div className={style.form_group}>
             <label htmlFor="password" className={style.label}>
-              Password
+              {t('Password')}
             </label>
             <input
               type="password"
-              placeholder="Password"
+              placeholder={t('Password')}
               name="password"
               id="password"
               className={style.signup_password}
@@ -171,11 +172,11 @@ export default function Signup() {
             className={`${style.signup_btn} ${loading ? style.disabled : ""}`}
             disabled={loading}
           >
-            {loading ? "Signing Up..." : "Submit"}
+            {loading ? t('SigningUp') :t('Submit') }
           </button>
 
           <p className={style.already_ac}>
-            Have an account?
+            {t('HaveAnAc')}
             <span>
               <NavLink
                 to="/signin"
@@ -185,7 +186,7 @@ export default function Signup() {
                     : `${style.navlink}`
                 }
               >
-                Login Here
+                {t('Login')}
               </NavLink>
             </span>
           </p>

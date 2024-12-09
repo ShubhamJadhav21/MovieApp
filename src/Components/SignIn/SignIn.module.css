@@ -29,7 +29,7 @@
   background: linear-gradient(#13191c, #010102);
   width: 22%;
   padding: 2rem;
-  min-height: 65vh;
+  /* min-height: 65vh; */
 }
 h1 {
   color: white;

@@ -39,7 +39,7 @@ export default function ValidateOtp() {
     setLoading(true); // Start loading during OTP verification
 
 
-    fetch("/api/verify-otp", {
+    fetch("", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

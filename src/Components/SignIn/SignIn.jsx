@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import style from "./SignIn.module.css";
 import { NavLink } from "react-router-dom";
@@ -13,7 +14,7 @@ export default function SignIn() {
   const [isButtonClicked, setIsButtonClicked] = useState(false); // Track if button is clicked
 
   const navigate = useNavigate(); // Use navigate to redirect to OTP validation
-  
+  const {t} = useTranslation()
   function goHome() {
     navigate('/'); // This will navigate to the home page
   }
@@ -163,17 +164,17 @@ export default function SignIn() {
           <IoHomeOutline onClick={goHome}/>
         </span>
         <div className={style.wrapper_sign_in}>
-          <h1>Sign In</h1>
+          <h1>{t('SignIn')}</h1>
 
           <div className={style.mob}>
             <label htmlFor="mobNo" className={style.label}>
-              Mobile Number
+              {t('MobileNo')}
             </label>
             <input
               type="text"
               id="mobNo"
               name="MobNo"
-              placeholder="Mobile Number"
+              placeholder={t('MobileNo')}
               className={style.mob_input}
               value={mobNo} // Added value attribute
               onChange={(e) => {
@@ -201,18 +202,18 @@ export default function SignIn() {
               onClick={handleSendOtp}
               disabled={isOtpButtonDisabled}
             >
-              Send OTP
+              {t('sendOtp')}
             </button>
           ) : (
             <div className={style.pass}>
               <label htmlFor="password" className={style.label}>
-                Password
+                {t('Password')}
               </label>
               <input
                 type="password"
                 id="password"
                 name="password"
-                placeholder="Password"
+                placeholder={t('Password')}
                 className={style.pass_input}
                 value={password} // Added value attribute
                 onChange={(e) => {
@@ -235,20 +236,20 @@ export default function SignIn() {
                 onClick={handleSignInWithPassword}
                 disabled={isSignInButtonDisabled || loading}
               >
-                {loading ? "Signing In..." : "Sign In"}
+                {loading ? t('SigningIn') : t('SignIn')}
               </button>
             </div>
           )}
 
-          <span className={style.or}>OR</span>
+          <span className={style.or}>{t('Or')}</span>
 
           <button className={style.otp} onClick={toggleSignInMethod}>
-            {useSignInCode ? "Password" : "Use a sign-in code"}
+            {useSignInCode ? t('Password') : t('signincode')}
           </button>
 
           <div className={style.signup}>
             <p>
-              New to MovieDekho?
+             {t('new')}
               <span>
                 <NavLink
                   to="/signup"
@@ -258,7 +259,7 @@ export default function SignIn() {
                       : `${style.navlink}`
                   }
                 >
-                  Sign up now.
+                  {t('signupNow')}
                 </NavLink>
               </span>
             </p>
