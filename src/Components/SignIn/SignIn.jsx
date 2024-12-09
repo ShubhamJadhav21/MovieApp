@@ -202,7 +202,7 @@ export default function SignIn() {
               onClick={handleSendOtp}
               disabled={isOtpButtonDisabled}
             >
-              {t('sendOtp')}
+              {t('SendOtp')}
             </button>
           ) : (
             <div className={style.pass}>
