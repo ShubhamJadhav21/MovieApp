@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import style from "./SignIn.module.css";
@@ -6,25 +6,27 @@ import { NavLink } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
 
 export default function SignIn() {
-  const [useSignInCode, setUseSignInCode] = useState(false); // State to toggle modes
-  const [mobNo, setMobNo] = useState(""); // Mobile number state
-  const [password, setPassword] = useState(""); // Password state
+  const [useSignInCode, setUseSignInCode] = useState(false); 
+  const [mobNo, setMobNo] = useState(""); 
+  const [password, setPassword] = useState(""); 
   const [errors, setErrors] = useState({ mobNo: "", password: "" });
-  const [loading, setLoading] = useState(false); // Loading state for sign-in
-  const [isButtonClicked, setIsButtonClicked] = useState(false); // Track if button is clicked
+  const [loading, setLoading] = useState(false); 
+  const [isButtonClicked, setIsButtonClicked] = useState(false); 
 
-  const navigate = useNavigate(); // Use navigate to redirect to OTP validation
-  const {t} = useTranslation()
+  const navigate = useNavigate(); 
+  const { t } = useTranslation();
+
   function goHome() {
-    navigate('/'); // This will navigate to the home page
+    navigate("/"); 
   }
-// Handler to toggle between password and OTP modes
+
+  
   const toggleSignInMethod = () => {
     setUseSignInCode(!useSignInCode);
-    setErrors({ mobNo: "", password: "" }); // Clear errors on toggle
+    setErrors({ mobNo: "", password: "" });
   };
 
-  // Validate mobile number
+  
   const validateMobNo = (value) => {
     if (value.length === 0) {
       return "Mobile number is required.";
@@ -35,7 +37,7 @@ export default function SignIn() {
     return "";
   };
 
-  // Validate password
+
   const validatePassword = (value) => {
     if (value.length === 0) {
       return "Password is required.";
@@ -46,47 +48,34 @@ export default function SignIn() {
     return "";
   };
 
-  // Handle sending OTP
+  
   const handleSendOtp = () => {
-    setIsButtonClicked(true); // Set button clicked state to true
+    setIsButtonClicked(true); 
     const mobNoError = validateMobNo(mobNo);
     if (mobNoError) {
       setErrors((prevErrors) => ({ ...prevErrors, mobNo: mobNoError }));
       return;
     }
 
-    // API call to check if the user is registered
-    fetch("/api/check-user", {
+    
+    fetch("http://localhost:3000/api/v1/send-otp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ mobNo }), // Send the mobile number to the backend
+      body: JSON.stringify({ mobNo }), 
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.isSignedUp) {
-          // If user is signed up, send OTP
-          return fetch("localhost:3000/api/v1/send-otp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ mobNo }), // Send the mobile number for OTP
-          });
+        if (data.success) {
+          
+          navigate("/otp-validation", { state: { mobNo } });
         } else {
-          // If user is not signed up, prompt user to sign up
+          
           setErrors((prevErrors) => ({
             ...prevErrors,
-            mobNo: "User not registered. Please sign up.",
+            mobNo: data.message || "Failed to send OTP. Please try again.",
           }));
-        }
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          // Navigate to OTP validation page after OTP is sent successfully
-          navigate("/otp-validation", { state: { mobNo } });
         }
       })
       .catch((error) => {
@@ -98,9 +87,9 @@ export default function SignIn() {
       });
   };
 
-  // Handle Sign-In with password
+  
   const handleSignInWithPassword = () => {
-    setIsButtonClicked(true); // Set button clicked state to true
+    setIsButtonClicked(true); 
     const mobNoError = validateMobNo(mobNo);
     const passwordError = validatePassword(password);
 
@@ -113,24 +102,24 @@ export default function SignIn() {
       return;
     }
 
-    setLoading(true); // Start loading while checking credentials
+    setLoading(true); 
 
     // API call to validate mobile number and password
-    fetch("/api/signin-password", {
+    fetch("http://localhost:3000/api/v1/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ mobNo, password }), // Send the mobile number and password to the backend
+      body: JSON.stringify({ mobNo, password }), 
     })
       .then((response) => response.json())
       .then((data) => {
-        setLoading(false); // Stop loading after the API call
-        if (data.isAuthenticated) {
-          // If the user is authenticated, navigate to the home page
+        setLoading(false); 
+        if (data) {
+          
           navigate("/");
         } else {
-          // If the password is incorrect
+          
           setErrors((prevErrors) => ({
             ...prevErrors,
             password: "Invalid password. Please try again.",
@@ -160,21 +149,21 @@ export default function SignIn() {
   return (
     <div className={style.signin_maincontainer}>
       <div className={style.main_wrapper_signin}>
-        <span className={style.back} >
-          <IoHomeOutline onClick={goHome}/>
+        <span className={style.back}>
+          <IoHomeOutline onClick={goHome} />
         </span>
         <div className={style.wrapper_sign_in}>
-          <h1>{t('SignIn')}</h1>
+          <h1>{t("SignIn")}</h1>
 
           <div className={style.mob}>
             <label htmlFor="mobNo" className={style.label}>
-              {t('MobileNo')}
+              {t("MobileNo")}
             </label>
             <input
               type="text"
               id="mobNo"
               name="MobNo"
-              placeholder={t('MobileNo')}
+              placeholder={t("MobileNo")}
               className={style.mob_input}
               value={mobNo} // Added value attribute
               onChange={(e) => {
@@ -202,18 +191,18 @@ export default function SignIn() {
               onClick={handleSendOtp}
               disabled={isOtpButtonDisabled}
             >
-              {t('SendOtp')}
+              {t("SendOtp")}
             </button>
           ) : (
             <div className={style.pass}>
               <label htmlFor="password" className={style.label}>
-                {t('Password')}
+                {t("Password")}
               </label>
               <input
                 type="password"
                 id="password"
                 name="password"
-                placeholder={t('Password')}
+                placeholder={t("Password")}
                 className={style.pass_input}
                 value={password} // Added value attribute
                 onChange={(e) => {
@@ -236,20 +225,20 @@ export default function SignIn() {
                 onClick={handleSignInWithPassword}
                 disabled={isSignInButtonDisabled || loading}
               >
-                {loading ? t('SigningIn') : t('SignIn')}
+                {loading ? t("SigningIn") : t("SignIn")}
               </button>
             </div>
           )}
 
-          <span className={style.or}>{t('Or')}</span>
+          <span className={style.or}>{t("Or")}</span>
 
           <button className={style.otp} onClick={toggleSignInMethod}>
-            {useSignInCode ? t('Password') : t('signincode')}
+            {useSignInCode ? t("Password") : t("signincode")}
           </button>
 
           <div className={style.signup}>
             <p>
-             {t('new')}
+              {t("new")}
               <span>
                 <NavLink
                   to="/signup"
@@ -259,7 +248,7 @@ export default function SignIn() {
                       : `${style.navlink}`
                   }
                 >
-                  {t('signupNow')}
+                  {t("signupNow")}
                 </NavLink>
               </span>
             </p>

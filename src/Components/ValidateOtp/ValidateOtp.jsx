@@ -39,7 +39,7 @@ export default function ValidateOtp() {
     setLoading(true); // Start loading during OTP verification
 
 
-    fetch("", {
+    fetch("http://localhost:3000/api/v1/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default function ValidateOtp() {
       .then((response) => response.json())
       .then((data) => {
         setLoading(false); // Stop loading after API response
-        if (data.success) {
+        if (data.status) {
           // Navigate to home page if OTP is correct
           navigate("/");
         } else {

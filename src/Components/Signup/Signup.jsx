@@ -56,7 +56,7 @@ export default function Signup() {
     setLoading(true); // Set loading state to true during form submission
 
     // Send form data to backend using API call
-    fetch("localhost:3000/api/v1/users", {
+    fetch("http://localhost:3000/api/v1/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export default function Signup() {
       .then((response) => response.json())
       .then((data) => {
         setLoading(false); // Stop loading after the API call
-        if (data.success) {
+        if (data.status) {
           // If the signup is successful, navigate to the SignIn page
           navigate("/signin");
         } else {
