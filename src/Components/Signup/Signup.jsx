@@ -56,7 +56,7 @@ export default function Signup() {
     setLoading(true); // Set loading state to true during form submission
 
     // Send form data to backend using API call
-    fetch("/api/signup", {
+    fetch("localhost:3000/api/v1/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

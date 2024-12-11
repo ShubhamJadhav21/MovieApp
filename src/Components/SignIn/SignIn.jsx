@@ -67,7 +67,7 @@ export default function SignIn() {
       .then((data) => {
         if (data.isSignedUp) {
           // If user is signed up, send OTP
-          return fetch("/api/send-otp", {
+          return fetch("localhost:3000/api/v1/send-otp", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
