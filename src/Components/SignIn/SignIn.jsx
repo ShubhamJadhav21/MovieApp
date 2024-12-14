@@ -237,116 +237,93 @@ export default function SignIn() {
             )}
           </div>
 
-          {otpSent ? (
+          {/* {otpSent ? (
             <div className={style.otp_section}>
               <label htmlFor="otp" className={style.label}>
                 {t("EnterOtp")}
               </label>
               <input
                 type="text"
-                id="otp"
-                name="otp"
-                aria-label="OTP"
+                id="otp" */}
+               
+
+
+          {useSignInCode ? (
+            <button
+              type="button"
+              className={`${style.otp_btn} ${
+                isOtpButtonDisabled ? style.disabled : ""
+              }`}
+              onClick={handleSendOtp}
+              disabled={isOtpButtonDisabled}
+            >
+              {t("SendOtp")}
+            </button>
+          ) : (
+            <div className={style.pass}>
+              <label htmlFor="password" className={style.label}>
+                {t("Password")}
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                aria-label="Password"
                 aria-required="true"
-                aria-invalid={!!errors.otp}
-                placeholder={t("EnterOtp")}
-                className={style.otp_input}
-                value={otp}
+                aria-invalid={!!errors.password}
+                placeholder={t("Password")}
+                className={style.pass_input}
+                value={password}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9]/g, "").slice(0, 6);
-                  setOtp(value);
+                  setPassword(e.target.value);
                   setErrors((prevErrors) => ({
                     ...prevErrors,
-                    otp: "",
+                    password: "",
                   }));
                 }}
               />
-              {isButtonClicked && errors.otp && (
-                <span className={style.error}>{errors.otp}</span>
+              {isButtonClicked && errors.password && (
+                <span className={style.error}>{errors.password}</span>
               )}
+
               <button
-                className={style.submit_btn}
-                onClick={handleOtpSignIn}
-                disabled={isOtpSignInDisabled || loading}
+                type="button"
+                className={`${style.signin_btn} ${
+                  isSignInButtonDisabled ? style.disabled : ""
+                }`}
+                onClick={handleSignInWithPassword}
+                disabled={isSignInButtonDisabled || loading}
               >
-                {loading ? t("Loading") : t("SignIn")}
+                {loading ? t("SigningIn") : t("SignIn")}
               </button>
             </div>
-          ) : (
-            <div className={style.password_section}>
-              {useSignInCode ? (
-                <>
-                  <button
-                    className={style.submit_btn}
-                    onClick={handleSendOtp}
-                    disabled={isOtpButtonDisabled || loading}
-                  >
-                    {loading ? t("Loading") : t("SendOtp")}
-                  </button>
-                  <button
-                    className={style.link_btn}
-                    onClick={toggleSignInMethod}
-                  >
-                    {t("UsePassword")}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div className={style.password}>
-                    <label htmlFor="password" className={style.label}>
-                      {t("Password")}
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      aria-label="Password"
-                      aria-required="true"
-                      aria-invalid={!!errors.password}
-                      placeholder={t("Password")}
-                      className={style.password_input}
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          password: "",
-                        }));
-                      }}
-                    />
-                    {isButtonClicked && errors.password && (
-                      <span className={style.error}>{errors.password}</span>
-                    )}
-                  </div>
-                  <button
-                    className={style.submit_btn}
-                    onClick={handleSignInWithPassword}
-                    disabled={isSignInButtonDisabled || loading}
-                  >
-                    {loading ? t("Loading") : t("SignIn")}
-                  </button>
-                  <button
-                    className={style.link_btn}
-                    onClick={toggleSignInMethod}
-                  >
-                    {t("UseOtp")}
-                  </button>
-                </>
-              )}
-            </div>
           )}
-        </div>
-        <div className={style.footer}>
-          <p>
-            {t("DontHaveAccount")}{" "}
-            <NavLink to="/signup" className={style.link}>
-              {t("SignUp")}
-            </NavLink>
-          </p>
+
+          <span className={style.or}>{t("Or")}</span>
+
+          <button className={style.otp} onClick={toggleSignInMethod}>
+            {useSignInCode ? t("Password") : t("signincode")}
+          </button>
+
+          <div className={style.signup}>
+            <p>
+              {t("new")}
+              <span>
+                <NavLink
+                  to="/signup"
+                  className={({ isActive }) =>
+                    isActive
+                      ? `${style.navlink} ${style.active}`
+                      : `${style.navlink}`
+                  }
+                >
+                  {t("signupNow")}
+                </NavLink>
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
-  }
-  
-              
+}
