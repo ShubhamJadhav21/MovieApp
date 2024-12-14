@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import style from "./SignIn.module.css";
@@ -6,28 +6,36 @@ import { NavLink } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
 
 export default function SignIn() {
-  const [useSignInCode, setUseSignInCode] = useState(false); 
-  const [mobNo, setMobNo] = useState(""); 
-  const [password, setPassword] = useState(""); 
-  const [errors, setErrors] = useState({ mobNo: "", password: "" });
-  const [loading, setLoading] = useState(false); 
-  const [isButtonClicked, setIsButtonClicked] = useState(false); 
+  const [useSignInCode, setUseSignInCode] = useState(false);
+  const [mobile, setMobile] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [errors, setErrors] = useState({ mobile: "", password: "", otp: "" });
+  const [loading, setLoading] = useState(false);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
-  function goHome() {
-    navigate("/"); 
-  }
+  useEffect(() => {
+    document.getElementById("mobile")?.focus();
+    return () => {
+      setMobile("");
+      setPassword("");
+      setOtp("");
+      setErrors({ mobile: "", password: "", otp: "" });
+    };
+  }, []);
 
-  
-  const toggleSignInMethod = () => {
-    setUseSignInCode(!useSignInCode);
-    setErrors({ mobNo: "", password: "" });
-  };
+  const goHome = () => navigate("/");
 
-  
-  const validateMobNo = (value) => {
+  const toggleSignInMethod = useCallback(() => {
+    setUseSignInCode((prev) => !prev);
+    setErrors({ mobile: "", password: "", otp: "" });
+  }, []);
+
+  const validateMobile = (value) => {
     if (value.length === 0) {
       return "Mobile number is required.";
     }
@@ -37,6 +45,15 @@ export default function SignIn() {
     return "";
   };
 
+  const validateOtp = (value) => {
+    if (value.length === 0) {
+      return "OTP is required.";
+    }
+    if (value.length !== 6 || !/^[0-9]+$/.test(value)) {
+      return "OTP must be exactly 6 digits.";
+    }
+    return "";
+  };
 
   const validatePassword = (value) => {
     if (value.length === 0) {
@@ -48,33 +65,30 @@ export default function SignIn() {
     return "";
   };
 
-  
-  const handleSendOtp = () => {
-    setIsButtonClicked(true); 
-    const mobNoError = validateMobNo(mobNo);
-    if (mobNoError) {
-      setErrors((prevErrors) => ({ ...prevErrors, mobNo: mobNoError }));
+  const handleSendOtp = useCallback(() => {
+    setIsButtonClicked(true);
+    const mobileError = validateMobile(mobile);
+    if (mobileError) {
+      setErrors((prevErrors) => ({ ...prevErrors, mobile: mobileError }));
       return;
     }
 
-    
     fetch("http://localhost:3000/api/v1/send-otp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ mobNo }), 
+      body: JSON.stringify({ mobile }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          
-          navigate("/otp-validation", { state: { mobNo } });
+          setOtpSent(true);
+          setErrors((prevErrors) => ({ ...prevErrors, mobile: "" }));
         } else {
-          
           setErrors((prevErrors) => ({
             ...prevErrors,
-            mobNo: data.message || "Failed to send OTP. Please try again.",
+            mobile: data.message || "Failed to send OTP. Please try again.",
           }));
         }
       })
@@ -82,47 +96,88 @@ export default function SignIn() {
         console.error("Error during API call:", error);
         setErrors((prevErrors) => ({
           ...prevErrors,
-          mobNo: "An error occurred. Please try again.",
+          mobile: "An error occurred. Please try again.",
         }));
       });
-  };
+  }, [mobile]);
 
-  
-  const handleSignInWithPassword = () => {
-    setIsButtonClicked(true); 
-    const mobNoError = validateMobNo(mobNo);
-    const passwordError = validatePassword(password);
+  const handleOtpSignIn = useCallback(() => {
+    setIsButtonClicked(true);
+    const mobileError = validateMobile(mobile);
+    const otpError = validateOtp(otp);
 
-    if (mobNoError || passwordError) {
+    if (mobileError || otpError) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        mobNo: mobNoError,
+        mobile: mobileError,
+        otp: otpError,
+      }));
+      return;
+    }
+
+    setLoading(true);
+
+    fetch("http://localhost:3000/api/v1/users/login-with-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mobile, otp }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setLoading(false);
+        if (data && data.success) {
+          navigate("/");
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            otp: data.message || "Invalid OTP. Please try again.",
+          }));
+        }
+      })
+      .catch((error) => {
+        console.error("Error during API call:", error);
+        setLoading(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          otp: "An error occurred. Please try again.",
+        }));
+      });
+  }, [mobile, otp, navigate]);
+
+  const handleSignInWithPassword = useCallback(() => {
+    setIsButtonClicked(true);
+    const mobileError = validateMobile(mobile);
+    const passwordError = validatePassword(password);
+
+    if (mobileError || passwordError) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        mobile: mobileError,
         password: passwordError,
       }));
       return;
     }
 
-    setLoading(true); 
+    setLoading(true);
 
-    // API call to validate mobile number and password
     fetch("http://localhost:3000/api/v1/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ mobNo, password }), 
+      body: JSON.stringify({ mobile, password }),
     })
       .then((response) => response.json())
       .then((data) => {
-        setLoading(false); 
-        if (data) {
-          
+        setLoading(false);
+        if (data && data.success) {
           navigate("/");
         } else {
-          
           setErrors((prevErrors) => ({
             ...prevErrors,
-            password: "Invalid password. Please try again.",
+            password: data.message || "Invalid password. Please try again.",
           }));
         }
       })
@@ -134,17 +189,16 @@ export default function SignIn() {
           password: "An error occurred. Please try again.",
         }));
       });
-  };
+  }, [mobile, password, navigate]);
 
-  // Disable Send OTP button if mobNo is invalid or empty
-  const isOtpButtonDisabled = errors.mobNo !== "" || mobNo.length !== 10;
-
-  // Disable Sign In button if either mobNo or password is invalid
+  const isOtpButtonDisabled = errors.mobile !== "" || mobile.length !== 10;
   const isSignInButtonDisabled =
-    errors.mobNo !== "" ||
+    errors.mobile !== "" ||
     errors.password !== "" ||
-    mobNo.length !== 10 ||
+    mobile.length !== 10 ||
     password.length < 6;
+
+  const isOtpSignInDisabled = errors.mobile !== "" || errors.otp !== "" || otp.length !== 6;
 
   return (
     <div className={style.signin_maincontainer}>
@@ -156,105 +210,143 @@ export default function SignIn() {
           <h1>{t("SignIn")}</h1>
 
           <div className={style.mob}>
-            <label htmlFor="mobNo" className={style.label}>
+            <label htmlFor="mobile" className={style.label}>
               {t("MobileNo")}
             </label>
             <input
               type="text"
-              id="mobNo"
-              name="MobNo"
+              id="mobile"
+              name="mobile"
+              aria-label="Mobile number"
+              aria-required="true"
+              aria-invalid={!!errors.mobile}
               placeholder={t("MobileNo")}
               className={style.mob_input}
-              value={mobNo} // Added value attribute
+              value={mobile}
               onChange={(e) => {
-                const value = e.target.value
-                  .replace(/[^0-9]/g, "")
-                  .slice(0, 10); // Only numbers, max 10 digits
-                setMobNo(value);
+                const value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
+                setMobile(value);
                 setErrors((prevErrors) => ({
                   ...prevErrors,
-                  mobNo: "", // Clear error as user types
+                  mobile: "",
                 }));
               }}
             />
-            {isButtonClicked && errors.mobNo && (
-              <span className={style.error}>{errors.mobNo}</span>
+            {isButtonClicked && errors.mobile && (
+              <span className={style.error}>{errors.mobile}</span>
             )}
           </div>
 
-          {useSignInCode ? (
-            <button
-              type="button"
-              className={`${style.otp_btn} ${
-                isOtpButtonDisabled ? style.disabled : ""
-              }`}
-              onClick={handleSendOtp}
-              disabled={isOtpButtonDisabled}
-            >
-              {t("SendOtp")}
-            </button>
-          ) : (
-            <div className={style.pass}>
-              <label htmlFor="password" className={style.label}>
-                {t("Password")}
+          {otpSent ? (
+            <div className={style.otp_section}>
+              <label htmlFor="otp" className={style.label}>
+                {t("EnterOtp")}
               </label>
               <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder={t("Password")}
-                className={style.pass_input}
-                value={password} // Added value attribute
+                type="text"
+                id="otp"
+                name="otp"
+                aria-label="OTP"
+                aria-required="true"
+                aria-invalid={!!errors.otp}
+                placeholder={t("EnterOtp")}
+                className={style.otp_input}
+                value={otp}
                 onChange={(e) => {
-                  setPassword(e.target.value);
+                  const value = e.target.value.replace(/[^0-9]/g, "").slice(0, 6);
+                  setOtp(value);
                   setErrors((prevErrors) => ({
                     ...prevErrors,
-                    password: "", // Clear error as user types
+                    otp: "",
                   }));
                 }}
               />
-              {isButtonClicked && errors.password && (
-                <span className={style.error}>{errors.password}</span>
+              {isButtonClicked && errors.otp && (
+                <span className={style.error}>{errors.otp}</span>
               )}
-
               <button
-                type="button"
-                className={`${style.signin_btn} ${
-                  isSignInButtonDisabled ? style.disabled : ""
-                }`}
-                onClick={handleSignInWithPassword}
-                disabled={isSignInButtonDisabled || loading}
+                className={style.submit_btn}
+                onClick={handleOtpSignIn}
+                disabled={isOtpSignInDisabled || loading}
               >
-                {loading ? t("SigningIn") : t("SignIn")}
+                {loading ? t("Loading") : t("SignIn")}
               </button>
             </div>
+          ) : (
+            <div className={style.password_section}>
+              {useSignInCode ? (
+                <>
+                  <button
+                    className={style.submit_btn}
+                    onClick={handleSendOtp}
+                    disabled={isOtpButtonDisabled || loading}
+                  >
+                    {loading ? t("Loading") : t("SendOtp")}
+                  </button>
+                  <button
+                    className={style.link_btn}
+                    onClick={toggleSignInMethod}
+                  >
+                    {t("UsePassword")}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className={style.password}>
+                    <label htmlFor="password" className={style.label}>
+                      {t("Password")}
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      aria-label="Password"
+                      aria-required="true"
+                      aria-invalid={!!errors.password}
+                      placeholder={t("Password")}
+                      className={style.password_input}
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          password: "",
+                        }));
+                      }}
+                    />
+                    {isButtonClicked && errors.password && (
+                      <span className={style.error}>{errors.password}</span>
+                    )}
+                  </div>
+                  <button
+                    className={style.submit_btn}
+                    onClick={handleSignInWithPassword}
+                    disabled={isSignInButtonDisabled || loading}
+                  >
+                    {loading ? t("Loading") : t("SignIn")}
+                  </button>
+                  <button
+                    className={style.link_btn}
+                    onClick={toggleSignInMethod}
+                  >
+                    {t("UseOtp")}
+                  </button>
+                </>
+              )}
+            </div>
           )}
-
-          <span className={style.or}>{t("Or")}</span>
-
-          <button className={style.otp} onClick={toggleSignInMethod}>
-            {useSignInCode ? t("Password") : t("signincode")}
-          </button>
-
-          <div className={style.signup}>
-            <p>
-              {t("new")}
-              <span>
-                <NavLink
-                  to="/signup"
-                  className={({ isActive }) =>
-                    isActive
-                      ? `${style.navlink} ${style.active}`
-                      : `${style.navlink}`
-                  }
-                >
-                  {t("signupNow")}
-                </NavLink>
-              </span>
-            </p>
-          </div>
+        </div>
+        <div className={style.footer}>
+          <p>
+            {t("DontHaveAccount")}{" "}
+            <NavLink to="/signup" className={style.link}>
+              {t("SignUp")}
+            </NavLink>
+          </p>
         </div>
       </div>
     </div>
   );
-}
+  }
+  
+              

@@ -7,12 +7,12 @@ import { useTranslation } from "react-i18next";
 
 export default function Signup() {
   const navigate = useNavigate(); // Hook to navigate after successful signup
-  const {t,i18} = useTranslation()
+  const { t, i18 } = useTranslation();
   // State for storing form values and error messages
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    mobNo: "",
+    mobile: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
@@ -33,8 +33,8 @@ export default function Signup() {
 
     if (!formData.firstName) errors.firstName = "First name is required.";
     if (!formData.lastName) errors.lastName = "Last name is required.";
-    if (!formData.mobNo || formData.mobNo.length !== 10) {
-      errors.mobNo = "Please enter a valid 10-digit mobile number.";
+    if (!formData.mobile || formData.mobile.length !== 10) {
+      errors.mobile = "Please enter a valid 10-digit mobile number.";
     }
     if (!formData.password || formData.password.length < 6) {
       errors.password = "Password must be at least 6 characters long.";
@@ -43,45 +43,58 @@ export default function Signup() {
     return errors;
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors); // Show validation errors if any
       return;
     }
+  
+    setLoading(true); // Start the loading state
+    const apiPayload = {
+      ...formData,
+      mobile: formData.mobile, // Map `mobile` to `mobNo`
+    };
+    console.log("apiPayload================",apiPayload);
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-    setLoading(true); // Set loading state to true during form submission
-
-    // Send form data to backend using API call
-    fetch("http://localhost:3000/api/v1/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData), // Send the form data as JSON
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setLoading(false); // Stop loading after the API call
-        if (data.status) {
-          // If the signup is successful, navigate to the SignIn page
-          navigate("/signin");
-        } else {
-          // Handle backend errors (e.g., user already exists)
-          setErrors({
-            form: data.message || "An error occurred. Please try again.",
-          });
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error("Error during API call:", error);
-        setErrors({ form: "An error occurred. Please try again." });
+        body: JSON.stringify(apiPayload),
       });
+  
+      const data = await response.json();
+      setLoading(false);
+  
+      if (response.ok && data.status) {
+        // Reset form data
+        setFormData({
+          firstName: "",
+          lastName: "",
+          mobile: "",
+          password: "",
+        });
+  
+        // Navigate to sign-in page
+        navigate("/signin");
+      } else {
+        // Display backend error message
+        setErrors({
+          form: data.message || "An error occurred. Please try again.",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error during API call:", error);
+      setErrors({ form: "Network error. Please try again." });
+    }
   };
+  
   function goHome() {
     navigate("/");
   }
@@ -92,16 +105,16 @@ export default function Signup() {
           <span className={style.back} onClick={goHome}>
             <IoHomeOutline />
           </span>
-          <h1>{t('SignUp')}</h1>
+          <h1>{t("SignUp")}</h1>
           {errors.form && <div className={style.error}>{errors.form}</div>}
 
           <div className={style.form_group}>
             <label htmlFor="firstName" className={style.label}>
-              {t('FirstName')}
+              {t("FirstName")}
             </label>
             <input
               type="text"
-              placeholder={t('FirstName')}
+              placeholder={t("FirstName")}
               name="firstName"
               id="firstName"
               className={style.signup_firstName}
@@ -115,11 +128,11 @@ export default function Signup() {
 
           <div className={style.form_group}>
             <label htmlFor="lastName" className={style.label}>
-              {t('LastName')}
+              {t("LastName")}
             </label>
             <input
               type="text"
-              placeholder={t('LastName')}
+              placeholder={t("LastName")}
               name="lastName"
               id="lastName"
               className={style.signup_lastName}
@@ -132,30 +145,30 @@ export default function Signup() {
           </div>
 
           <div className={style.form_group}>
-            <label htmlFor="mobNo" className={style.label}>
-              {t('MobileNo')}
+            <label htmlFor="mobile" className={style.label}>
+              {t("MobileNo")}
             </label>
             <input
               type="text"
-              placeholder={t('MobileNo')}
-              name="mobNo"
-              id="mobNo"
+              placeholder={t("MobileNo")}
+              name="mobile"
+              id="mobile"
               className={style.signup_mob}
-              value={formData.mobNo}
+              value={formData.mobile}
               onChange={handleChange}
             />
-            {errors.mobNo && (
-              <span className={style.error}>{errors.mobNo}</span>
+            {errors.mobile && (
+              <span className={style.error}>{errors.mobile}</span>
             )}
           </div>
 
           <div className={style.form_group}>
             <label htmlFor="password" className={style.label}>
-              {t('Password')}
+              {t("Password")}
             </label>
             <input
               type="password"
-              placeholder={t('Password')}
+              placeholder={t("Password")}
               name="password"
               id="password"
               className={style.signup_password}
@@ -172,11 +185,11 @@ export default function Signup() {
             className={`${style.signup_btn} ${loading ? style.disabled : ""}`}
             disabled={loading}
           >
-            {loading ? t('SigningUp') :t('Submit') }
+            {loading ? t("SigningUp") : t("Submit")}
           </button>
 
           <p className={style.already_ac}>
-            {t('HaveAnAc')}
+            {t("HaveAnAc")}
             <span>
               <NavLink
                 to="/signin"
@@ -186,7 +199,7 @@ export default function Signup() {
                     : `${style.navlink}`
                 }
               >
-                {t('Login')}
+                {t("Login")}
               </NavLink>
             </span>
           </p>
