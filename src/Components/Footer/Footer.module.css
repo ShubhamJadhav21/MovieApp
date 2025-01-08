@@ -1,0 +1,42 @@
+.footer_wrapper {
+    background-color: black; 
+    color: #a8a8a8; 
+    padding: 2rem;
+    font-size: 1rem;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 1.5rem;
+    align-items: flex-start; 
+  }
+  
+  .footer_wrapper > p {
+    flex: 1 1 100%; 
+    font-size: 1rem;
+    color: #a8a8a8; 
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-decoration: underline;
+  }
+  
+  .footer_wrapper div {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; 
+  }
+  
+  .footer_wrapper span {
+    cursor: pointer;
+    font-weight: 400;
+    transition: color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+  }
+  
+  
+  
+  @media screen and (max-width: 600px) {
+    .footer_wrapper div {
+      flex: 1 1; 
+      text-align: left;
+    }
+  }
+  

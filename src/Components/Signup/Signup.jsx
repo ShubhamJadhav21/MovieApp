@@ -4,6 +4,7 @@ import style from "./Signup.module.css";
 import { IoHomeOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 export default function Signup() {
   const navigate = useNavigate(); // Hook to navigate after successful signup
@@ -57,9 +58,9 @@ export default function Signup() {
       ...formData,
       mobile: formData.mobile, // Map `mobile` to `mobNo`
     };
-    console.log("apiPayload================",apiPayload);
+   
     try {
-      const response = await fetch("http://localhost:3000/api/v1/users", {
+      const response = await fetch("https://movies-back-app-aeur.vercel.app/api/v1/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +71,7 @@ export default function Signup() {
   
       const data = await response.json();
       setLoading(false);
-  
+      
       if (response.ok && data.status) {
         // Reset form data
         setFormData({
@@ -81,6 +82,7 @@ export default function Signup() {
         });
   
         // Navigate to sign-in page
+        toast.success('Signup Successful')
         navigate("/signin");
       } else {
         // Display backend error message
@@ -149,7 +151,7 @@ export default function Signup() {
               {t("MobileNo")}
             </label>
             <input
-              type="text"
+              type="number"
               placeholder={t("MobileNo")}
               name="mobile"
               id="mobile"

@@ -1,0 +1,26 @@
+
+.profile_wrapper {
+  position: relative; /* Ensure relative positioning for absolute placement of Userinfo */
+  display: inline-block;
+}
+
+.profile_icon {
+  font-size: 2rem !important;
+  cursor: pointer;
+}
+
+.userinfo_wrapper {
+  position: absolute;
+  width: 10rem;
+height: auto;
+
+  top: 110%; /* Position directly below the icon */
+  left: -4rem; /* Align center horizontally */
+  transform: translateX(-50%); /* Center the Userinfo */
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}

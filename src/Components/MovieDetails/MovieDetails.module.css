@@ -1,0 +1,101 @@
+.movie_details {
+  max-width: 100vw;
+  height: 100vh;
+  background-color: #0f1014;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.movie_details span {
+  color: white;
+  font-size: 2rem;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  cursor: pointer;
+}
+
+.movie_wrapper p {
+  color: white;
+  text-align: left;
+  padding-left: 20%;
+}
+
+.movie_wrapper strong {
+  color: #d03a2f;
+}
+
+.movie_wrapper {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 1rem; 
+  width: 80%;
+}
+
+ .movie_poster{
+  width: 60%;
+  height: 50%; 
+  padding: 1rem;
+  transition: transform 0.5s ease, filter 0.3s ease; /* Smooth transition for effects */
+
+}
+.btn{
+  padding: .5rem;
+  width: 10rem;
+  font-size: 1rem;
+  background-color:white;
+  border-radius: .2rem;
+  cursor: pointer;
+}
+.movie_poster:hover{
+  transform: scale(1.1); /* Slightly zoom in */
+  filter: brightness(1.2); 
+ cursor: pointer;
+}
+
+.btn {
+  padding: 0.5rem;
+  margin-top: 1.5rem;
+  gap: .1rem;
+  width: 12rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out; /* Smooth and subtle transition */
+}
+.btn em{
+  padding-right: .1rem;
+  margin-top: 50%;
+}
+.btn:hover {
+  padding: 0.6rem; 
+  width: 12.5rem; 
+  font-size: 1.05rem; 
+  background-color: #f0f0f0; 
+  color: #333; 
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); 
+  transform: scale(1.05); 
+}
+
+
+@media screen and (max-width: 700px) {
+  .movie_wrapper img {
+    width: 80%;
+    height: 40%;
+  }
+
+  .movie_wrapper {
+    font-size: 1rem;
+    margin-top: 3rem;
+    width: 100%;
+  }
+  .btn{
+    margin-top: 2rem;
+  }
+  .movie_wrapper p {
+    padding-left: 2.5rem;
+  }
+}
