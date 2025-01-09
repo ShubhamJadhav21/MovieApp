@@ -1,4 +1,4 @@
-import SikandarKaMuquadar from "../../assets/MoviesPoster/SikandaarKaMuquadar.jpg";
+import SikandarKaMuquadar from "../../assets/MoviesPoster/SikandarKaMuquadar.jpg";
 import SinghamAgain from "../../assets/MoviesPoster/singhamAgain.avif";
 import SabarmatiReport from "../../assets/MoviesPoster/sabarmatiReport.webp";
 import Kill from "../../assets/MoviesPoster/kill.jpeg";
